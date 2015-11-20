@@ -1,0 +1,19 @@
+{
+  "name": "party-hard-faces",
+  "authors": [
+    "Toni Oriol <tonioriol@gmail.com>"
+  ],
+  "description": "face replacement and emotion detection app for vj'ing",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
