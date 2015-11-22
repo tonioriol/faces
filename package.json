@@ -1,37 +1,37 @@
 {
-  "name": "party-hard-faces",
-  "version": "1.0.0",
-  "description": "",
-  "private": true,
-  "dependencies": {
-    "connect": "^3.4.0",
-    "connect-busboy": "0.0.2",
-    "connect-multiparty": "^2.0.0",
-    "express": "^4.13.3",
-    "fluent-ffmpeg": "^2.0.1",
-    "formidable": "^1.0.17",
-    "imagesloaded": "^3.2.0",
-    "jquery": "^2.1.4",
-    "litr0n": "^1.0.1",
-    "multer": "^1.1.0",
-    "serve-static": "^1.10.0"
-  },
-  "devDependencies": {
-    "browserify-shim": "^3.8.11",
-    "laravel-elixir": "^3.4.2"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
-  },
-  "browserify-shim": {
-    "bower_components/clmtrackr/clmtrackr.js": "clmtrackr"
-  },
-  "author": "Toni Oriol <tonioriol@gmail.com> (http://tonioriol.com)",
-  "license": "ISC"
+	"name": "party-hard-faces",
+	"version": "1.0.0",
+	"description": "",
+	"private": true,
+	"dependencies": {
+		"connect": "^3.4.0",
+		"connect-busboy": "0.0.2",
+		"connect-multiparty": "^2.0.0",
+		"express": "^4.13.3",
+		"fluent-ffmpeg": "^2.0.1",
+		"formidable": "^1.0.17",
+		"imagesloaded": "^3.2.0",
+		"jquery": "^2.1.4",
+		"litr0n": "^1.0.1",
+		"multer": "^1.1.0",
+		"serve-static": "^1.10.0"
+	},
+	"devDependencies": {
+		"browserify-shim": "^3.8.11",
+		"laravel-elixir": "^3.4.2"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node server.js"
+	},
+	"browserify": {
+		"transform": [
+			"browserify-shim"
+		]
+	},
+	"browserify-shim": {
+		"bower_components/clmtrackr/clmtrackr.js": "clmtrackr"
+	},
+	"author": "Toni Oriol <tonioriol@gmail.com> (http://tonioriol.com)",
+	"license": "ISC"
 }
