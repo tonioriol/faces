@@ -1,41 +1,65 @@
-function CanvasRecorder(canvas, fps) {
-	this.fps     = undefined != fps ? fps : 15;
-	this.video   = new Whammy.Video(this.fps);
-	this.canvas  = canvas;
-	this._stop   = false;
-	this.result  = null;
+/**
+ * CanvasRecorder constructor function
+ * @param canvas canvas to record
+ * @param video video to record
+ * @param fps the desired frames per second, leave empty for the default 15
+ * @constructor
+ */
+function CanvasRecorder(canvas, video, fps) {
+	//speak('clase CanvasRecorder construida');
+	this.fps        = undefined != fps ? fps : 15;
+	this.recorder   = new Whammy.Video(this.fps);
+	this.canvas     = canvas;
+	this.video      = video != undefined ? video : null;
+	this._recording = true;
+	this.rec        = false;
+	this.blob       = null;
+	this.time       = null;
 }
 
 CanvasRecorder.prototype = {
-	constructor: CanvasRecorder,
-	capture    : function (callback) {
-		this.video.add(this.canvas);
-		if (!this._stop) {
+	constructor                 : CanvasRecorder,
+	/**
+	 * Starts the canvas recording
+	 */
+	capture                     : function () {
+		this.rec = true;
+
+		this.recorder.add(this._mergeCanvasAndVideoIfExists());
+
+		if (this._recording) {
 			requestAnimationFrame(this.capture.bind(this));
-		} else {
-			requestAnimationFrame(this._finish.bind(this, callback));
 		}
 	},
-	_finish    : function (callback) {
-		var start_time = +new Date;
-		var output     = this.video.compile();
-		var end_time   = +new Date;
-		var url        = (window.webkitURL || window.URL).createObjectURL(output);
+	_mergeCanvasAndVideoIfExists: function () {
+		var canvas = document.createElement('canvas');
 
-		this.result = {
-			output          : output,
-			url             : url,
-			compilation_time: (end_time - start_time),
-			kb              : Math.ceil(output.size / 1024)
-		};
+		if (null != this.video) {
+			canvas.width  = this.video.width;
+			canvas.height = this.video.height;
+			canvas.getContext("2d").drawImage(this.video, 0, 0);
+		} else {
+			canvas.width  = this.canvas.width;
+			canvas.height = this.canvas.height;
+		}
+		canvas.getContext("2d").drawImage(this.canvas, 0, 0);
 
-		document.getElementById('rec-vid').src = url;
-		document.getElementById('rec-down').href = url;
-
-		callback(this.result);
+		return canvas;
 	},
-	stop       : function (callback) {
-		this._stop = true;
-		this.capture(callback);
+	_finish                     : function () {
+		var start = +new Date;
+		this.blob = this.recorder.compile();
+		var end   = +new Date;
+		this.time = end - start;
+	},
+	/**
+	 * Stops the canvas record and executes the callback when its done
+	 * @param callback the callback t execute after stop the canvas recording
+	 */
+	stop                        : function (callback) {
+		this._recording = false;
+		this.rec = false;
+		this._finish();
+		callback(this.blob);
 	}
 };

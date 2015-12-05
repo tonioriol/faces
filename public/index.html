@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Scrambler Faces Substitution</title>
+    <meta charset="utf-8">
+    <style>
+
+        @font-face {
+            font-family: 'ArcadeClassic';
+            src: url('assets/fonts/arcadeclassic.regular.eot'); /* IE9 Compat Modes */
+            src: url('assets/fonts/arcadeclassic.regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('assets/fonts/arcadeclassic.regular.woff') format('woff'), /* Modern Browsers */ url('assets/fonts/arcadeclassic.regular.ttf') format('truetype'), /* Safari, Android, iOS */ url('assets/fonts/arcadeclassic.regular.svg#7367382f3487c257f2693bf0a2a7c5eb') format('svg'); /* Legacy iOS */
+            font-style: normal;
+            font-weight: 400;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #overlay, #webgl {
+            position: absolute;
+            top: 0;
+            left: 0;
+            -o-transform: scaleX(-1);
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+            -ms-filter: fliph; /*IE*/
+            filter: fliph; /*IE*/
+
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #videoel {
+            position: absolute;
+            top: 0;
+            left:0;
+            -o-transform: scaleX(-1);
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+            -ms-filter: fliph; /*IE*/
+            filter: fliph; /*IE*/
+
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #container {
+            /*position: relative;*/
+            /*width: 1024px;*/
+            /*margin: 0 auto;*/
+            /*overflow: hidden;*/
+        }
+
+        .masks {
+            display: none;
+        }
+
+        #webgl2 {
+            display: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #controls {
+            text-align: center;
+            position: fixed;
+            bottom: 20px;
+            left: 45%;
+        }
+
+        #countdown {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            font-family: 'ArcadeClassic';
+            font-size: 50vw;
+            text-align: center;
+            vertical-align: middle;
+            opacity: .7;
+            text-shadow: 2px 2px #ffe112;
+        }
+
+        #rec {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 8vw;
+            width: 8vw;
+            margin: 5vw;
+            background-color: red;
+            border-radius: 9999999px;
+            box-shadow: 0 0 5px 10px red;
+        }
+
+        #counter {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 8vw;
+            width: 8vw;
+            margin: 5vw;
+            font-family: 'ArcadeClassic';
+            font-size: 8vw;
+            text-align: center;
+            vertical-align: middle;
+            text-shadow: 2px 2px #fff;
+        }
+
+        #names {
+            position: absolute;
+            top: 0;
+            left: 0;
+            margin: 2vw;
+            padding: 2vw;
+            font-family: 'ArcadeClassic';
+            font-size: 5vw;
+            text-align: center;
+            vertical-align: middle;
+            color: #e7ff6f;
+            text-shadow: 2px 2px #ff2fcc;
+            background-color: rgba(0, 0, 0, .4);
+            letter-spacing: .5vw;
+        }
+
+        #end {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background-color: #76d55c;
+        }
+    </style>
+</head>
+<body>
+
+<div id="content">
+    <div id="container">
+        <video id="videoel" width="640" height="480" preload="auto"></video>
+        <canvas id="overlay" width="640" height="480"></canvas>
+        <canvas id="webgl" width="640" height="480"></canvas>
+        <canvas id="webgl2" width="640" height="480"></canvas>
+    </div>
+
+    <div id="controls" class="hidden">
+        <input
+            class="btn"
+            type="button"
+            value="wait, loading video & images"
+            disabled="disabled"
+            onclick="beginCountdown()"
+            id="startbutton"
+        >
+
+        <button id="stop-rec">Stop Rec</button>
+        <select name="mask" id="selectmask">
+            <option value="toni">Toni</option>
+            <option value="pippen">Pippen</option>
+            <option value="mercury">Freddie Mercury</option>
+            <option value="terminator">Terminator</option>
+            <option value="walter">Walter - Breaking Bad</option>
+            <option value="clooney">George Clooney</option>
+            <option value="bieber">Justin Bieber</option>
+            <option value="kim">Kim Kardashian</option>
+            <option value="rihanna">Rihanna</option>
+            <option value="audrey">Audrey Hepburn</option>
+            <option value="murray">Bill Murray</option>
+            <option value="connery">Sean Connery</option>
+            <option value="cage">Nicolas Cage</option>
+            <option value="queen">La Reina d'Anglaterra!</option>
+            <option value="obama">Obama</option>
+            <option value="chuck">Chuck Norris</option>
+            <option value="monalisa">Mona Lisa</option>
+            <option value="picasso">Picasso</option>
+            <option value="scream">El Grito de Munch</option>
+        </select>
+    </div>
+
+    <div id="images">
+        <img id="toni" class="masks" src="assets/img/toni.jpg">
+        <img id="pippen" class="masks" src="assets/img/pippen.png">
+        <img id="mercury" class="masks" src="assets/img/freddie-mercury-bw.jpg">
+        <img id="monalisa" class="masks" src="assets/img/joconde_crop.jpg">
+        <img id="bieber" class="masks" src="assets/img/Justin-Bieber2_crop.jpg">
+        <img id="kim" class="masks" src="assets/img/kim1_crop.jpg">
+        <img id="murray" class="masks" src="assets/img/bill-murray-snl_crop.jpg">
+        <img id="clooney" class="masks" src="assets/img/fragrance-George-Clooney-main_crop.jpg">
+        <img id="connery" class="masks" src="assets/img/sean_guru2_crop.jpg">
+        <img id="cage" class="masks" src="assets/img/cage2_crop.jpg">
+        <img id="rihanna" class="masks" src="assets/img/ri_1_crop.jpg">
+        <img id="audrey" class="masks" src="assets/img/audrey_crop.jpg">
+        <img id="queen" class="masks" src="assets/img/queen20_crop.jpg">
+        <img id="obama" class="masks" src="assets/img/obama4_crop.jpg">
+        <img id="picasso" class="masks" src="assets/img/picasso_drawing_crop.jpg">
+        <img id="scream" class="masks" src="assets/img/scream_crop.jpg">
+        <img id="terminator" class="masks" src="assets/img/terminator_crop.jpg">
+        <img id="chuck" class="masks" src="assets/img/chuck_crop.jpg">
+        <img id="walter" class="masks" src="assets/img/walter2_crop.jpg">
+    </div>
+
+    <div id="interface">
+        <div id="countdown" class="hidden">
+        </div>
+        <div id="rec" class="hidden"></div>
+        <div id="counter"></div>
+        <div id="names"></div>
+        <div id="end" class="hidden"></div>
+    </div>
+</div>
+
+<script src="assets/js/vendor/jquery.js"></script>
+<script src="assets/js/vendor/howler.js"></script>
+<script src="assets/js/vendor/nanobar.js"></script>
+<script src="assets/js/vendor/underscore.js"></script>
+
+<!-- recorder -->
+<script src="assets/js/vendor/whammy.js"></script>
+<script src="assets/js/canvas-recorder.js"></script>
+<script src="assets/js/vendor/FileSaver.js"></script>
+<script>
+
+    // ready
+    $(function () {
+
+        window.rec     = false;
+        window.nanobar = new Nanobar();
+
+        $('#names').html($('#selectmask').find('option:selected').html());
+
+//        speak('Documento preparado');
+
+        record = new CanvasRecorder(document.getElementById('webgl'), document.getElementById('videoel'));
+
+//        document.getElementById('stop-rec').onclick = function () {
+//            recStop();
+//        };
+
+        beep = new Howl({
+            src: ['assets/sounds/beep.ogg']
+        });
+    });
+
+    function recStart() {
+
+        counter();
+
+        $('#rec').fadeIn();
+        record.capture();
+        num = 0;
+
+        window.recInterval = setInterval(function () {
+            nanobar.go(num);
+            num++;
+        }, 17);
+
+        setTimeout(function () {
+            nanobar.go(0);
+            recStop();
+//            setTimeout(function () {
+//                location.href = location.href;
+//            }, 2000);
+        }, 6000);
+    }
+
+    function recStop() {
+        $('#rec').fadeOut();
+        record.stop(function (blob) {
+            window.rec = false;
+            uploadBlob(blob);
+        });
+    }
+
+    function uploadBlob(blob, path) {
+
+        path = path != undefined ? path : '/upload';
+
+        var filename = 'video-' + Date.now() + '.webm';
+        var file     = new File([blob], filename);
+        var data     = new FormData();
+        data.append('file', file, filename);
+
+        $.ajax({
+            url        : path,
+            type       : 'POST',
+            data       : data,
+            cache      : false,
+            contentType: false,
+            processData: false,
+            success    : function (data) {
+                console.log(data);
+//                speak("Upload success!");
+            },
+            error      : function () {
+//                speak("Upload fail!");
+            }
+        });
+    }
+
+    $(document).keydown(function (e) {
+        console.log(e.which);
+        switch (e.which) {
+            case 37: // left
+                changeFace('next');
+                break;
+            case 38: // up
+                break;
+            case 39: // right
+                changeFace('prev');
+                break;
+            case 40: // down
+//                recStop();
+                break;
+            case 32: // space
+                beginCountdown();
+                break;
+            default:
+                return; // exit this handler for other keys
+        }
+        e.preventDefault(); // prevent the default action (scroll / move caret)
+    });
+
+    var msg = new SpeechSynthesisUtterance();
+    var voices = window.speechSynthesis.getVoices();
+    msg.voice = voices[0]; // Note: some voices don't support altering params
+    msg.voiceURI = 'native';
+    msg.volume = 1; // 0 to 1
+    msg.rate = 1; // 0.1 to 10
+    msg.pitch = 1; //0 to 2
+    msg.lang = 'es-ES';
+
+    function speak(text) {
+        msg.text = text;
+        window.speechSynthesis.speak(msg);
+    }
+
+
+    function changeFace(direction) {
+        var $selectMask = $('#selectmask');
+        if (direction == 'next') {
+            $selectMask.find('option:selected').next().attr('selected', 'selected');
+        } else {
+            $selectMask.find('option:selected').prev().attr('selected', 'selected');
+        }
+        updateMaskKey($selectMask.find('option:selected').val());
+        $('#names').html($selectMask.find('option:selected').html());
+    }
+
+    function beginCountdown() {
+        if (!window.rec) {
+            window.rec = true;
+            // countdown
+            var $countdown = $('#countdown');
+            beep.play();
+            $countdown.html('3');
+            $countdown.removeClass('hidden');
+            console.log(3);
+
+            setTimeout(function () {
+                console.log(2);
+                beep.play();
+                $('#countdown').html('2');
+            }, 1000);
+            setTimeout(function () {
+                console.log(1);
+                beep.play();
+                $('#countdown').html('1');
+            }, 2000);
+            setTimeout(function () {
+                console.log(0);
+                $('#countdown').addClass('hidden');
+                beep.play();
+                recStart();
+            }, 3000);
+        }
+    }
+
+    function counter() {
+        $('#counter').show().html('6');
+        setTimeout(function () {
+            $('#counter').html('5');
+        }, 1000);
+        setTimeout(function () {
+            $('#counter').html('4');
+        }, 2000);
+        setTimeout(function () {
+            $('#counter').html('3');
+        }, 3000);
+        setTimeout(function () {
+            $('#counter').html('2');
+        }, 4000);
+        setTimeout(function () {
+            $('#counter').html('1');
+        }, 5000);
+        setTimeout(function () {
+            $('#counter').hide();
+        }, 6000);
+    }
+</script>
+
+<script src="assets/js/vendor/dat.gui.min.js"></script>
+<script src="assets/js/vendor/utils.js"></script>
+<script src="assets/js/vendor/clmtrackr.js"></script>
+<script src="assets/js/vendor/models/model_pca_20_svm.js"></script>
+<script src="assets/js/vendor/face_deformer.js"></script>
+<script src="assets/js/vendor/poisson_new.js"></script>
+
+<script src="assets/js/vendor/imagesloaded.pkgd.js"></script>
+
+<script src="assets/js/face-substitution.js"></script>
+</body>
+</html>

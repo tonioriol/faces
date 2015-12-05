@@ -17,6 +17,9 @@
     "tests"
   ],
   "dependencies": {
-    "file-saver.js": "~1.20150507.2"
+    "file-saver.js": "~1.20150507.2",
+    "howler.js": "~1.1.28",
+    "nanobar": "~0.2.0",
+    "underscore": "~1.8.3"
   }
 }

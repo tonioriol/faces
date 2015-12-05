@@ -47,7 +47,7 @@ export default class FaceSubstitution {
 		this.videoReady = false;
 		this.imagesReady = false;
 
-		this.faceTracker.video.addEventListener('canplay', function () {
+		this.faceTracker.recorder.addEventListener('canplay', function () {
 			this.videoReady = true;
 			this.startVideo();
 		}.bind(this), false);
@@ -148,16 +148,16 @@ export default class FaceSubstitution {
 	setAuxCanvases() {
 		// canvas for copying the warped face to
 		this.newCanvas        = document.createElement('canvas');
-		this.newCanvas.width  = this.faceTracker.video.width;
-		this.newCanvas.height = this.faceTracker.video.height;
+		this.newCanvas.width  = this.faceTracker.recorder.width;
+		this.newCanvas.height = this.faceTracker.recorder.height;
 		// canvas for copying videoframes to
 		this.videoCanvas        = document.createElement('canvas');
-		this.videoCanvas.width  = this.faceTracker.video.width;
-		this.videoCanvas.height = this.faceTracker.video.height;
+		this.videoCanvas.width  = this.faceTracker.recorder.width;
+		this.videoCanvas.height = this.faceTracker.recorder.height;
 		// canvas for masking
 		this.maskCanvas        = document.createElement('canvas');
-		this.maskCanvas.width  = this.faceTracker.video.width;
-		this.maskCanvas.height = this.faceTracker.video.height;
+		this.maskCanvas.width  = this.faceTracker.recorder.width;
+		this.maskCanvas.height = this.faceTracker.recorder.height;
 	}
 
 	setFaceDeformers() {
@@ -194,7 +194,7 @@ export default class FaceSubstitution {
 
 	updateMask(el) {
 		currentMask   = parseInt(el.target.value, 10);
-		this.positions = this.ctrack.getCurrentPosition(this.faceTracker.video);
+		this.positions = this.ctrack.getCurrentPosition(this.faceTracker.recorder);
 		if (this.positions) {
 			this.switchMasks(this.positions);
 		}
@@ -211,9 +211,9 @@ export default class FaceSubstitution {
 
 		if (this.videoReady && this.imagesReady) {
 			// start video
-			this.faceTracker.video.play();
+			this.faceTracker.recorder.play();
 			// start tracking
-			this.ctrack.start(this.faceTracker.video);
+			this.ctrack.start(this.faceTracker.recorder);
 			// start drawing face grid
 			this.drawGridLoop.bind(this);
 		}
@@ -223,7 +223,7 @@ export default class FaceSubstitution {
 
 		console.log(this.ctrack);
 		// get position of face
-		this.positions = this.ctrack.getCurrentPosition(this.faceTracker.video);
+		this.positions = this.ctrack.getCurrentPosition(this.faceTracker.recorder);
 
 		this.faceTracker.overlayCC.clearRect(0, 0, 500, 375);
 		if (this.positions) {
@@ -240,7 +240,7 @@ export default class FaceSubstitution {
 	}
 
 	switchMasks(pos) {
-		this.videoCanvas.getContext('2d').drawImage(this.faceTracker.video, 0, 0, this.videoCanvas.width, this.videoCanvas.height);
+		this.videoCanvas.getContext('2d').drawImage(this.faceTracker.recorder, 0, 0, this.videoCanvas.width, this.videoCanvas.height);
 
 		// we need to extend the positions with new estimated points in order to get pixels immediately outside mask
 		var newMaskPos = this.masks[this.images[this.currentMask]].slice(0);

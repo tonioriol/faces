@@ -5,7 +5,7 @@ export default class FaceTracker {
 	overlayCC;
 
 	constructor(videoId, overlayId) {
-		this.video     = document.getElementById(videoId);
+		this.recorder  = document.getElementById(videoId);
 		this.overlay   = document.getElementById(overlayId);
 		this.overlayCC = overlay.getContext('2d');
 		this.enableCameraStream();
@@ -16,10 +16,10 @@ export default class FaceTracker {
 		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 		window.URL             = window.URL || window.webkitURL || window.msURL || window.mozURL;
 
-		navigator.getUserMedia({video: true}, function (stream) {
+		navigator.getUserMedia({recorder: true}, function (stream) {
 
-			this.video.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
-			this.video.play();
+			this.recorder.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
+			this.recorder.play();
 
 		}.bind(this), function (e) {
 			console.log('Rejected', e);
